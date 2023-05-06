@@ -1,19 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const connectToDatabase = require("./db.js")
+
 const app = express();
 
 require("dotenv").config()
 
 app.use(express.json());
 
+/* connect to database */
+connectToDatabase();
+
 app.get('/', (req, res) => {
     res.send("Hello Api");
 });
 
-/* connect to database */
-mongoose.connect(process.env.MONGODB_URI)
-.then(()=>console.log("Database Connected Successfully..."))
-.catch(err=>console.log(err))
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT , () => {
