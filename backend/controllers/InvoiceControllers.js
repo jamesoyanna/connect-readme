@@ -24,11 +24,8 @@ const getTotalCount = async (req, res) => {
 
 // Create an invoice
 const createInvoice = async (req, res) => {
-  const invoice = req.body;
-  const newInvoice = new InvoiceModel(invoice);
-
   try {
-    await newInvoice.save();
+    const newInvoice = await InvoiceModel.create(req.body);
     res.status(201).json(newInvoice);
   } catch (error) {
     res.status(409).json(error.message);

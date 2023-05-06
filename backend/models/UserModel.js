@@ -2,11 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
-      type: String,
-      required: true,
-    },
-    lastName: {
+    name: {
       type: String,
       required: true,
     },
@@ -15,10 +11,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
-    },
-    status: {
-      type: String,
-      default: "Pending",
     },
     userId: {
       type: String,

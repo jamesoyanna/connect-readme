@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const connectToDatabase = require("./db.js")
 
 const app = express();
@@ -11,10 +10,12 @@ app.use(express.json());
 /* connect to database */
 connectToDatabase();
 
-app.get('/', (req, res) => {
-    res.send("Hello Api");
-});
+// Routes
+const userRoutes = require('./routes/userRoutes.js');
+const invoiceRoutes = require('./routes/invoiceRoute.js')
 
+app.use('/api/user', userRoutes);
+app.use('/api/invoices', invoiceRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT , () => {
