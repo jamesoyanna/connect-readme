@@ -1,31 +1,47 @@
 import React, { useState } from "react";
 import logo from "../images/logo.png";
 import { useNavigate  } from "react-router-dom";
+import axios from 'axios';
 
-const Dashboard = () => {
+const Invoice = () => {
   const navigate = useNavigate();
   const [invoiceData, setInvoiceData] = useState({
-    companyName: "",
-    companyAddress: "",
-    billTo: "",
+    name: "",
     phoneNumber: "",
-    emailAddress: "",
+    email: "",
     issuedDate: "",
     dueDate: "",
-    items: [{ description: "", quantity: "", price: "" }],
-    note: "",
+    items: [{ itemName: "", quantity: "", unitPrice: "" }],
+    notes: "",
+    total: "",
+    invoiceNumber:"",
+    totalQuantity: 0, 
+    totalAmount: 0,
   });
 
-  const navigateTo = (route) => {
-    navigate(route);
+  const navigateTo = (route, state) => {
+    navigate(route, { state });
   };
 
-  const handleCreateInvoice = () => {
-    // Perform any necessary data processing or validation
-
-    // Navigate to the InvoiceDetails page
-    navigateTo("/invoice-details");
+  const handleCreateInvoice = async () => {
+    try {
+      // Make the POST request to create an invoice
+      const response = await axios.post("http://localhost:5000/api/invoices", invoiceData);
+  
+      // Handle the response or perform any necessary actions
+      const createdInvoiceData = response.data;
+      console.log("Invoice created:", createdInvoiceData);
+  
+      // Redirect to the InvoiceDetails page with the invoice data
+      navigateTo("/invoice-details", { invoiceData: createdInvoiceData });
+    } catch (error) {
+      // Handle any errors
+      console.error("Error creating invoice:", error);
+    }
   };
+  
+  
+  
   
 
   const handleInputChange = (event) => {
@@ -38,28 +54,40 @@ const Dashboard = () => {
     const newItems = [...invoiceData.items];
     newItems[index][name] = value;
     setInvoiceData({ ...invoiceData, items: newItems });
+    updateTotals(newItems);
   };
 
   const handleAddItem = () => {
     setInvoiceData({
       ...invoiceData,
-      items: [...invoiceData.items, { description: "", quantity: "", price: "" }],
+      items: [...invoiceData.items, { itemName: "", quantity: "", unitPrice: "" }],
     });
   };
 
+ 
   const handleRemoveItem = (index) => {
     const newItems = [...invoiceData.items];
     newItems.splice(index, 1);
     setInvoiceData({ ...invoiceData, items: newItems });
+    updateTotals(newItems);
   };
 
-  const getTotalQuantity = () => {
-    return invoiceData.items.reduce((total, item) => total + item.quantity, 0);
+  // const getTotalQuantity = () => {
+  //   return invoiceData.items.reduce((total, item) => total + item.quantity, 0);
+  // };
+
+  const updateTotals = (items) => {
+    const totalQuantity = items.reduce((total, item) => total + parseInt(item.quantity || 0), 0);
+    const totalAmount = items.reduce(
+      (total, item) => total + (parseInt(item.quantity || 0) * parseFloat(item.unitPrice || 0)),
+      0
+    );
+    setInvoiceData({ ...invoiceData, totalQuantity, totalAmount });
   };
 
-  const getTotalAmount = () => {
-    return invoiceData.items.reduce((total, item) => total + item.quantity * item.price, 0);
-  };
+  // const getTotalAmount = () => {
+  //   return invoiceData.items.reduce((total, item) => total + item.quantity * item.unitPrice, 0);
+  // };
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -87,10 +115,10 @@ const Dashboard = () => {
                 Bill To:
               </label>
               <input
-                id="billTo"
-                name="billTo"
+                id="name"
+                name="name"
                 type="text"
-                value={invoiceData.billTo}
+                value={invoiceData.name}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                 placeholder="Enter bill to"
@@ -137,6 +165,20 @@ const Dashboard = () => {
                   className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                 />
               </div>
+              <div>
+              <label htmlFor="email" className="block mb-1 font-medium">
+                Phone Number:
+              </label>
+              <input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="text"
+                value={invoiceData.phoneNumber}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+                placeholder="Enter email address"
+              />
+            </div>
           </div>
         </div>
               <table className="w-full border-collapse border border-gray-400 mb-4">
@@ -154,9 +196,9 @@ const Dashboard = () => {
               <tr key={index}>
               <td className="border border-gray-400 px-4 py-2">
               <input
-              name="description"
+              name="itemName"
               type="text"
-              value={item.description}
+              value={item.itemName}
               onChange={(e) => handleItemChange(index, e)}
               className="w-full px-2 py-1 border rounded focus:outline-none focus:border-blue-500"
               placeholder="Enter item description"
@@ -174,15 +216,15 @@ const Dashboard = () => {
               </td>
               <td className="border border-gray-400 px-4 py-2">
               <input
-              name="price"
+              name="unitPrice"
               type="number"
-              value={item.price}
+              value={item.unitPrice}
               onChange={(e) => handleItemChange(index, e)}
               className="w-full px-2 py-1 border rounded focus:outline-none focus:border-blue-500"
               placeholder="Enter price"
               />
               </td>
-              <td className="border border-gray-400 px-4 py-2">{item.quantity * item.price}</td>
+              <td className="border border-gray-400 px-4 py-2">{item.quantity * item.unitPrice}</td>
               <td className="border border-gray-400 px-4 py-2">
               <button
               onClick={() => handleRemoveItem(index)}
@@ -208,9 +250,9 @@ const Dashboard = () => {
               <div>
 <label htmlFor="note" className="block mb-1 font-medium">Note/Payment Info:</label>
 <textarea
-           id="note"
-           name="note"
-           value={invoiceData.note}
+           id="notes"
+           name="notes"
+           value={invoiceData.notes}
            onChange={handleInputChange}
            className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
            placeholder="Enter note/payment info"
@@ -219,8 +261,8 @@ const Dashboard = () => {
               <div>
               <h3 className="text-lg font-medium">
               Invoice Summary:</h3>
-<p>Total Quantity: {getTotalQuantity()}</p>
-<p>Total Amount: {getTotalAmount()}</p>
+<p>Total Quantity: {invoiceData.totalQuantity}</p>
+<p>Total Amount: {invoiceData.totalAmount}</p>
 </div>
 
 </div>
@@ -237,4 +279,4 @@ Create Invoice
 );
 };
 
-export default Dashboard;
+export default Invoice;

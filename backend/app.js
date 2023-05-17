@@ -1,12 +1,15 @@
 const express = require('express');
 const connectToDatabase = require("./db.js")
 const { Novu } = require('@novu/node');
-
+const cors = require('cors');
 const app = express();
 
 require("dotenv").config()
 
 app.use(express.json());
+
+// Enable CORS middleware
+app.use(cors());
 
 /* connect to database */
 connectToDatabase();
