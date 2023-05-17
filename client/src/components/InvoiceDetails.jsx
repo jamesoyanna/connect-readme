@@ -14,11 +14,6 @@ const InvoiceDetails = () => {
   const handleGoBack = () => {
     navigateTo("/");
   };
-    // Generate a random number with 6 digits
-    const generateRandomNumber = () => {
-        const randomNumber = Math.floor(100000 + Math.random() * 900000);
-        return randomNumber;
-      };
 
       
   // Format the date to a readable format
@@ -35,7 +30,7 @@ const InvoiceDetails = () => {
           <div className="flex items-start justify-between mb-4">
             <div>
               <img src={logo} alt="Logo" className="h-12 mb-2" />
-              <h1 className="text-2xl font-medium">{invoiceData.companyName}</h1>
+              <h1 className="text-2xl font-medium">Novu hackathon Invoice</h1>
               <p>Hilton Way, Ikeja, Lagos</p>
             </div>
             <button
@@ -48,7 +43,7 @@ const InvoiceDetails = () => {
                 
               <div className="ml-auto">
                 <p className="font-medium">Invoice No:</p>
-                <p>INV{generateRandomNumber()}</p>
+                <p>{invoiceData.invoiceNumber}</p>
               </div>
             </div>
           </div>

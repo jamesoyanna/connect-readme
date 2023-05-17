@@ -5,7 +5,6 @@ const InvoiceSchema = new Schema({
     issuedDate: Date,
     items: [ { itemName: String, unitPrice: String, quantity: String} ],
     notes: String,
-    status: String,
     invoiceNumber: String,
     type: String,
     creator: [String],

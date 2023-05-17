@@ -1,4 +1,5 @@
 const InvoiceModel = require('../models/InvoiceModel');
+const { nanoid } = require('nanoid');
 
 // Get all invoices
 const getInvoices = async (req, res) => { 
@@ -25,12 +26,22 @@ const getTotalCount = async (req, res) => {
 // Create an invoice
 const createInvoice = async (req, res) => {
   try {
-    const newInvoice = await InvoiceModel.create(req.body);
+    const { clientName, items } = req.body;
+    const invoiceNumber = nanoid(6); // generate a random 8-character string
+
+    const newInvoice = await InvoiceModel.create({
+      clientName,
+      items,
+      invoiceNumber // add the generated invoice number to the invoice
+    });
+
+
     res.status(201).json(newInvoice);
   } catch (error) {
     res.status(409).json(error.message);
   }
 };
+
 
 // Get a single invoice
 const getInvoice = async (req, res) => { 

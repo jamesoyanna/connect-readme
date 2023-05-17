@@ -25,23 +25,27 @@ const Invoice = () => {
 
   const handleCreateInvoice = async () => {
     try {
+      generateInvoiceNumber();
       // Make the POST request to create an invoice
-      const response = await axios.post("http://localhost:5000/api/invoices", invoiceData);
-  
+      const response = await axios.post(
+        "http://localhost:5000/api/invoices",
+        invoiceData
+      );
+
       // Handle the response or perform any necessary actions
       const createdInvoiceData = response.data;
       console.log("Invoice created:", createdInvoiceData);
-  
-      // Redirect to the InvoiceDetails page with the invoice data
-      navigateTo("/invoice-details", { invoiceData: createdInvoiceData });
+
+      // Redirect to the InvoiceDetails page with the invoice data and invoice number
+      navigateTo("/invoice-details", {
+        invoiceData: createdInvoiceData,
+        invoiceNumber: invoiceData.invoiceNumber,
+      });
     } catch (error) {
       // Handle any errors
       console.error("Error creating invoice:", error);
     }
   };
-  
-  
-  
   
 
   const handleInputChange = (event) => {
@@ -72,9 +76,6 @@ const Invoice = () => {
     updateTotals(newItems);
   };
 
-  // const getTotalQuantity = () => {
-  //   return invoiceData.items.reduce((total, item) => total + item.quantity, 0);
-  // };
 
   const updateTotals = (items) => {
     const totalQuantity = items.reduce((total, item) => total + parseInt(item.quantity || 0), 0);
@@ -85,9 +86,14 @@ const Invoice = () => {
     setInvoiceData({ ...invoiceData, totalQuantity, totalAmount });
   };
 
-  // const getTotalAmount = () => {
-  //   return invoiceData.items.reduce((total, item) => total + item.quantity * item.unitPrice, 0);
-  // };
+  
+  const generateInvoiceNumber = () => {
+    const timestamp = new Date().getTime();
+    const randomNum = Math.floor(Math.random() * 9000) + 1000;
+    const invoiceNumber = `INV-${timestamp}-${randomNum}`;
+    setInvoiceData((prevData) => ({ ...prevData, invoiceNumber }));
+  };
+
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -102,7 +108,7 @@ const Invoice = () => {
             <div className="flex items-start">
               <div className="ml-auto">
                 <p className="font-medium">Invoice No:</p>
-               
+                {invoiceData.invoiceNumber}
               </div>
             </div>
           </div>
