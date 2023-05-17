@@ -1,5 +1,12 @@
 const InvoiceModel = require('../models/InvoiceModel');
-const { nanoid } = require('nanoid');
+const { v4: uuidv4 } = require('uuid');
+
+
+function generateRandomNumber() {
+  const min = 100000;
+  const max = 999999;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 // Get all invoices
 const getInvoices = async (req, res) => { 
@@ -23,24 +30,22 @@ const getTotalCount = async (req, res) => {
   }
 };
 
-// Create an invoice
+
+//Create an invoice
 const createInvoice = async (req, res) => {
   try {
-    const { clientName, items } = req.body;
-    const invoiceNumber = nanoid(6); // generate a random 8-character string
+    const { notes,dueDate,issuedDate,phoneNumber, name,totalQuantity, email,totalAmount, items } = req.body;
+    const invoiceNumber = `INV${generateRandomNumber()}`; // generate a random 6-digit invoice number with the prefix "INV"
 
-    const newInvoice = await InvoiceModel.create({
-      clientName,
-      items,
-      invoiceNumber // add the generated invoice number to the invoice
+    const newInvoice = await InvoiceModel.create({notes,dueDate,issuedDate,phoneNumber, name,totalQuantity, email,totalAmount, items ,items, invoiceNumber // add the generated invoice number to the invoice
     });
-
 
     res.status(201).json(newInvoice);
   } catch (error) {
     res.status(409).json(error.message);
   }
 };
+
 
 
 // Get a single invoice

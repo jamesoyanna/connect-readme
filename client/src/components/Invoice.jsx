@@ -5,6 +5,8 @@ import axios from 'axios';
 
 const Invoice = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+
   const [invoiceData, setInvoiceData] = useState({
     name: "",
     phoneNumber: "",
@@ -25,7 +27,7 @@ const Invoice = () => {
 
   const handleCreateInvoice = async () => {
     try {
-      generateInvoiceNumber();
+      setIsLoading(true); // Set loading state to true
       // Make the POST request to create an invoice
       const response = await axios.post(
         "http://localhost:5000/api/invoices",
@@ -37,10 +39,7 @@ const Invoice = () => {
       console.log("Invoice created:", createdInvoiceData);
 
       // Redirect to the InvoiceDetails page with the invoice data and invoice number
-      navigateTo("/invoice-details", {
-        invoiceData: createdInvoiceData,
-        invoiceNumber: invoiceData.invoiceNumber,
-      });
+      navigateTo("/invoice-details", {invoiceData: createdInvoiceData,});
     } catch (error) {
       // Handle any errors
       console.error("Error creating invoice:", error);
@@ -86,14 +85,6 @@ const Invoice = () => {
     setInvoiceData({ ...invoiceData, totalQuantity, totalAmount });
   };
 
-  
-  const generateInvoiceNumber = () => {
-    const timestamp = new Date().getTime();
-    const randomNum = Math.floor(Math.random() * 9000) + 1000;
-    const invoiceNumber = `INV-${timestamp}-${randomNum}`;
-    setInvoiceData((prevData) => ({ ...prevData, invoiceNumber }));
-  };
-
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -102,7 +93,7 @@ const Invoice = () => {
           <div className="flex items-start justify-between mb-4">
             <div>
               <img src={logo} alt="Logo" className="h-12 mb-2" />
-              <h1 className="text-2xl font-medium">{invoiceData.companyName}</h1>
+              <h1 className="text-2xl font-medium">Novu Hackathon Invoice</h1>
               <p>Hilton Way, Ikeja, Lagos</p>
             </div>
             <div className="flex items-start">
@@ -273,12 +264,14 @@ const Invoice = () => {
 
 </div>
 <div className="flex justify-center">
-<button onClick={handleCreateInvoice}
-         type="submit"
-         className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-       >
-Create Invoice
-</button>
+<button
+      onClick={handleCreateInvoice}
+      type="submit"
+      className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+      disabled={isLoading} // Disable the button while loading
+    >
+      {isLoading ? "Creating..." : "Create Invoice"}
+    </button>
 </div>
 </div>
 </div>

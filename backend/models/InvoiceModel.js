@@ -8,7 +8,6 @@ const InvoiceSchema = new Schema({
     invoiceNumber: String,
     type: String,
     creator: [String],
-    totalAmountReceived: Number,
     name: String,
     phoneNumber: String,
     email: String,
