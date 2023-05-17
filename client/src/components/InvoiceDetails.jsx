@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../images/logo.png";
+import logo from "../images/nov-logo.webp";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const InvoiceDetails = () => {
@@ -14,6 +14,19 @@ const InvoiceDetails = () => {
   const handleGoBack = () => {
     navigateTo("/");
   };
+    // Generate a random number with 6 digits
+    const generateRandomNumber = () => {
+        const randomNumber = Math.floor(100000 + Math.random() * 900000);
+        return randomNumber;
+      };
+
+      
+  // Format the date to a readable format
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toDateString();
+  };
+
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -25,10 +38,17 @@ const InvoiceDetails = () => {
               <h1 className="text-2xl font-medium">{invoiceData.companyName}</h1>
               <p>Hilton Way, Ikeja, Lagos</p>
             </div>
+            <button
+              onClick={handleGoBack}
+              className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+            >
+              Go Back
+            </button>
             <div className="flex items-start">
+                
               <div className="ml-auto">
                 <p className="font-medium">Invoice No:</p>
-                <p>{invoiceData.invoiceNo}</p>
+                <p>INV{generateRandomNumber()}</p>
               </div>
             </div>
           </div>
@@ -45,7 +65,7 @@ const InvoiceDetails = () => {
             <div>
               <div className="ml-8">
                 <p className="font-medium">Issued Date:</p>
-                <p>{invoiceData.issuedDate}</p>
+                <p>{formatDate(invoiceData.issuedDate)}</p>
               </div>
             </div>
           </div>
@@ -60,7 +80,7 @@ const InvoiceDetails = () => {
             </div>
             <div className="ml-8">
               <p className="font-medium">Due Date:</p>
-              <p>{invoiceData.dueDate}</p>
+              <p>{formatDate(invoiceData.dueDate)}</p>
             </div>
             <div>
               <label htmlFor="email" className="block mb-1 font-medium">
