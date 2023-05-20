@@ -1,11 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import logo from "../images/nov-logo.webp";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 const InvoiceDetails = () => {
   const location = useLocation();
   const invoiceData = location.state?.invoiceData;
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const navigateTo = (route) => {
     navigate(route);
@@ -14,6 +17,32 @@ const InvoiceDetails = () => {
   const handleGoBack = () => {
     navigateTo("/");
   };
+
+  const handleSendInvoice = async () => {
+    try {
+      setLoading(true);
+      setError("");
+  
+      // Extract the email address from the invoiceData object
+      const { email } = invoiceData;
+  
+      // Make a POST request to the send-pdf endpoint
+      const response = await axios.post("http://localhost:5000/send-pdf", {
+        email,
+        invoiceData,
+      });
+  
+      setLoading(false);
+  
+      // Handle the response
+      console.log(response.data); // You can customize this based on your requirements
+    } catch (error) {
+      setLoading(false);
+      setError("An error occurred while sending the invoice.");
+      console.error(error);
+    }
+  };
+  
 
       
   // Format the date to a readable format
@@ -122,12 +151,9 @@ const InvoiceDetails = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <button
-            // onClick={handleCreateInvoice}
-            type="submit"
-            className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-          >
-            Send Invoice
+        {error && <p>{error}</p>}
+          <button className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none" onClick={handleSendInvoice} disabled={loading}>
+            {loading ? "Sending..." : "Send Invoice"}
           </button>
         </div>
       </div>
