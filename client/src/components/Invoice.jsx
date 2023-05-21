@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from "../images/nov-logo.webp";
 import { useNavigate  } from "react-router-dom";
-import axios from 'axios';
+import api from '../api';
 
 const Invoice = () => {
   const navigate = useNavigate();
@@ -29,10 +29,7 @@ const Invoice = () => {
     try {
       setIsLoading(true); // Set loading state to true
       // Make the POST request to create an invoice
-      const response = await axios.post(
-        "http://localhost:5000/api/invoices",
-        invoiceData
-      );
+      const response = await api.post("/api/invoices", invoiceData);
 
       // Handle the response or perform any necessary actions
       const createdInvoiceData = response.data;

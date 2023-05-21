@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import logo from "../images/nov-logo.webp";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from '../api';
 
 const InvoiceDetails = () => {
   const location = useLocation();
@@ -27,7 +27,7 @@ const InvoiceDetails = () => {
       const { email } = invoiceData;
   
       // Make a POST request to the send-pdf endpoint
-      const response = await axios.post("http://localhost:5000/send-pdf", {
+      const response = await api.post("/send-pdf", {
         email,
         invoiceData,
       });
