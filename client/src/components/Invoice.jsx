@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-import logo from "../images/nov-logo.webp";
+import logo from "../images/one.png";
 import { useNavigate  } from "react-router-dom";
 import api from '../api';
 
 const Invoice = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    issuedDate: "",
+  });
 
   const [invoiceData, setInvoiceData] = useState({
     name: "",
@@ -28,6 +33,22 @@ const Invoice = () => {
   const handleCreateInvoice = async () => {
     try {
       setIsLoading(true); // Set loading state to true
+
+      // Validation
+      const requiredFields = ["name", "email"];
+      const missingFields = requiredFields.filter((field) => !invoiceData[field]);
+
+      if (missingFields.length > 0) {
+        // Display error messages for missing fields
+        const errorMessages = missingFields.map((field) => `${field} is required`);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          ...Object.fromEntries(missingFields.map((field) => [field, `${field} is required`])),
+        }));
+        console.error("Missing fields:", errorMessages);
+        return;
+      }
+
       // Make the POST request to create an invoice
       const response = await api.post("/api/invoices", invoiceData);
 
@@ -36,12 +57,15 @@ const Invoice = () => {
       console.log("Invoice created:", createdInvoiceData);
 
       // Redirect to the InvoiceDetails page with the invoice data and invoice number
-      navigateTo("/invoice-details", {invoiceData: createdInvoiceData,});
+      navigateTo("/invoice-details", { invoiceData: createdInvoiceData });
     } catch (error) {
       // Handle any errors
       console.error("Error creating invoice:", error);
+    } finally {
+      setIsLoading(false); // Reset loading state
     }
   };
+  
   
 
   const handleInputChange = (event) => {
@@ -91,7 +115,7 @@ const Invoice = () => {
             <div>
               <img src={logo} alt="Logo" className="h-12 mb-2" />
               <h1 className="text-2xl font-medium">Novu Hackathon Invoice</h1>
-              <p>Hilton Way, Ikeja, Lagos</p>
+              <p>Lagos, Nigeria</p>
             </div>
             <div className="flex items-start">
               <div className="ml-auto">
@@ -117,6 +141,7 @@ const Invoice = () => {
                 className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                 placeholder="Enter bill to"
               />
+               {errors.name && <p className="text-red-500">{errors.name}</p>}
             </div>
             <div>
               <div className="ml-8">
@@ -147,7 +172,9 @@ const Invoice = () => {
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                 placeholder="Enter email address"
+                
               />
+               {errors.email && <p className="text-red-500">{errors.email}</p>}
             </div>
             <div className="ml-8">
                 <p className="font-medium">Due Date:</p>
@@ -170,7 +197,7 @@ const Invoice = () => {
                 value={invoiceData.phoneNumber}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
-                placeholder="Enter email address"
+                placeholder="Enter phone number"
               />
             </div>
           </div>
@@ -197,7 +224,9 @@ const Invoice = () => {
               className="w-full px-2 py-1 border rounded focus:outline-none focus:border-blue-500"
               placeholder="Enter item description"
               />
+              
               </td>
+              
               <td className="border border-gray-400 px-4 py-2">
               <input
               name="quantity"
@@ -217,9 +246,12 @@ const Invoice = () => {
               className="w-full px-2 py-1 border rounded focus:outline-none focus:border-blue-500"
               placeholder="Enter price"
               />
+              
               </td>
+              
               <td className="border border-gray-400 px-4 py-2">{item.quantity * item.unitPrice}</td>
               <td className="border border-gray-400 px-4 py-2">
+                
               <button
               onClick={() => handleRemoveItem(index)}
               className="text-red-500 hover:text-red-700 focus:outline-none"
@@ -231,10 +263,11 @@ const Invoice = () => {
               ))}
               </tbody>
               </table>
+              {errors.items && <p className="text-red-500">{errors.items}</p>}
               <div className="mb-4">
               <button
                        onClick={handleAddItem}
-                       className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+                       className="py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
                      >
               Add Item
               </button>
@@ -264,7 +297,7 @@ const Invoice = () => {
 <button
       onClick={handleCreateInvoice}
       type="submit"
-      className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+      className="px-8 py-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
       disabled={isLoading} // Disable the button while loading
     >
       {isLoading ? "Creating..." : "Create Invoice"}

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import logo from "../images/nov-logo.webp";
+import logo from "../images/one.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from '../api';
 
@@ -31,11 +31,9 @@ const InvoiceDetails = () => {
         email,
         invoiceData,
       });
-  
       setLoading(false);
-  
       // Handle the response
-      console.log(response.data); // You can customize this based on your requirements
+      console.log(response.data);
     } catch (error) {
       setLoading(false);
       setError("An error occurred while sending the invoice.");
@@ -60,11 +58,11 @@ const InvoiceDetails = () => {
             <div>
               <img src={logo} alt="Logo" className="h-12 mb-2" />
               <h1 className="text-2xl font-medium">Novu hackathon Invoice</h1>
-              <p>Hilton Way, Ikeja, Lagos</p>
+              <p>Lagos, Nigeria</p>
             </div>
             <button
               onClick={handleGoBack}
-              className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+              className="py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
             >
               Go Back
             </button>
@@ -152,7 +150,7 @@ const InvoiceDetails = () => {
         </div>
         <div className="flex justify-center">
         {error && <p>{error}</p>}
-          <button className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none" onClick={handleSendInvoice} disabled={loading}>
+          <button className="px-8 py-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none" onClick={handleSendInvoice} disabled={loading}>
             {loading ? "Sending..." : "Send Invoice"}
           </button>
         </div>
