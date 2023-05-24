@@ -54,7 +54,6 @@ const Invoice = () => {
 
       // Handle the response or perform any necessary actions
       const createdInvoiceData = response.data;
-      console.log("Invoice created:", createdInvoiceData);
 
       // Redirect to the InvoiceDetails page with the invoice data and invoice number
       navigateTo("/invoice-details", { invoiceData: createdInvoiceData });

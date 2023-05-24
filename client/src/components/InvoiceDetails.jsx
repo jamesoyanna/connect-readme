@@ -51,7 +51,6 @@ const InvoiceDetails = () => {
   
     if (editMode) {
       try {
-        setLoading(true);
         setError("");
   
         // Calculate the updated total quantity and total amount
@@ -70,7 +69,6 @@ const InvoiceDetails = () => {
         };
   
         const response = await api.patch(`/api/invoices/${invoiceData._id}`, updatedInvoiceData);
-        setLoading(false);
   
         if (response.data.error) {
           setError(response.data.error);
@@ -116,25 +114,16 @@ const InvoiceDetails = () => {
               >
                 Go Back
               </button>
-              {editMode ? (
-                <button
-                  onClick={handleEditInvoice}
-                  className="py-2 px-4 ml-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
-                >
-                  Done
-                </button>
-              ) : (
-                <button
+              <button
                   onClick={handleEditInvoice}
                   className="py-2 px-4 ml-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
                 >
                   Edit Invoice
                 </button>
-              )}
             </div>
             <div className="flex items-start">
               <div className="ml-auto">
-                <p className="font-medium">Invoice No:</p>
+                <p className="text-lg font-bold">Invoice No:</p>
                 <p>{invoiceData.invoiceNumber}</p>
               </div>
             </div>
@@ -149,6 +138,7 @@ const InvoiceDetails = () => {
               </label>
               {editMode ? (
                 <input
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                   type="text"
                   value={invoiceData.name}
                   onChange={(e) =>
@@ -178,6 +168,7 @@ const InvoiceDetails = () => {
               </label>
               {editMode ? (
                 <input
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                   type="email"
                   value={invoiceData.email}
                   onChange={(e) =>
@@ -201,6 +192,7 @@ const InvoiceDetails = () => {
               </label>
               {editMode ? (
                 <input
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                   type="tel"
                   value={invoiceData.phoneNumber}
                   onChange={(e) =>
@@ -231,6 +223,7 @@ const InvoiceDetails = () => {
                 <td className="border border-gray-400 px-4 py-2">
                   {editMode ? (
                     <input
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                       type="text"
                       value={item.itemName}
                       onChange={(e) =>
@@ -251,6 +244,7 @@ const InvoiceDetails = () => {
                 <td className="border border-gray-400 px-4 py-2">
                   {editMode ? (
                     <input
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                       type="number"
                       value={item.quantity}
                       onChange={(e) =>
@@ -271,6 +265,7 @@ const InvoiceDetails = () => {
                 <td className="border border-gray-400 px-4 py-2">
                   {editMode ? (
                     <input
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                       type="number"
                       value={item.unitPrice}
                       onChange={(e) =>
@@ -303,6 +298,7 @@ const InvoiceDetails = () => {
             </label>
             {editMode ? (
               <textarea
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                 value={invoiceData.notes}
                 onChange={(e) =>
                   setInvoiceData((prevState) => ({
@@ -330,15 +326,24 @@ const InvoiceDetails = () => {
           <p className="text-red-700 mb-8 text-center">{error}</p>
         )}
           <div className="flex items-center justify-center">
-            <button
-              onClick={handleSendInvoice}
-              disabled={loading}
-              className={`py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {loading ? "Sending..." : "Send Invoice"}
-            </button>
+          {editMode ? (
+  <button
+    onClick={handleEditInvoice}
+    className="py-2 px-4 ml-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
+  >
+    Done
+  </button>
+) : (
+  <button
+    onClick={handleSendInvoice}
+    disabled={loading}
+    className={`py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none ${
+      loading ? "opacity-50 cursor-not-allowed" : ""
+    }`}
+  >
+    {loading ? "Sending..." : "Send Invoice"}
+  </button>
+)}
           </div>
       </div>
     </div>
