@@ -1,7 +1,7 @@
 const express = require('express');
 const connectToDatabase = require("./db.js");
 const { Novu } = require('@novu/node');
-const pdf = require('html-pdf');
+const puppeteer = require('puppeteer');
 const cors = require('cors');
 const fs = require('fs');
 
@@ -30,32 +30,38 @@ app.get('/', (req, res) => {
   res.send("Welcome to connect me Novu API");
 });
 
-app.post('/send-pdf', (req, res) => {
+app.post('/send-pdf', async (req, res) => {
   const { email } = req.body;
-  const pdfOptions = { format: 'A4' };
 
-  // Generate PDF content using pdfTemplate function
-  const content = pdfTemplate(req.body);
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
-  pdf.create(content, pdfOptions).toFile('invoice.pdf', (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'An error occurred while generating the PDF.' });
-    }
+    // Generate PDF content using pdfTemplate function
+    const content = pdfTemplate(req.body);
+
+    // Set the HTML content of the page
+    await page.setContent(content);
+
+    // Generate the PDF
+    const pdfBuffer = await page.pdf({ format: 'A4' });
+
+    // Close the browser
+    await browser.close();
 
     const novu = new Novu(process.env.NOVU_API_KEY);
 
     novu.trigger('invoice-notification', {
       to: {
         subscriberId: '63695b559e04bb11b56924df',
-        email: `${email}`
+        email: email
       },
       payload: {
         attachments: [
           {
-            file: fs.readFileSync('invoice.pdf').toString('base64'),
+            file: pdfBuffer.toString('base64'),
             name: 'invoice.pdf',
-            mime: 'application/octet-stream',
+            mime: 'application/pdf',
           },
         ],
       },
@@ -70,23 +76,37 @@ app.post('/send-pdf', (req, res) => {
 
     // Send the response with the data
     res.json(responseData);
-  });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'An error occurred while generating the PDF.' });
+  }
 });
 
-app.post('/create-pdf', (req, res) => {
-  const pdfOptions = { format: 'A4' };
+app.post('/create-pdf', async (req, res) => {
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
-  // Generate PDF content using pdfTemplate function
-  const content = pdfTemplate(req.body);
+    // Generate PDF content using pdfTemplate function
+    const content = pdfTemplate(req.body);
 
-  pdf.create(content, pdfOptions).toFile('invoice.pdf', (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send('An error occurred while generating the PDF.');
-    }
+    // Set the HTML content of the page
+    await page.setContent(content);
+
+    // Generate the PDF
+    const pdfBuffer = await page.pdf({ format: 'A4' });
+
+    // Close the browser
+    await browser.close();
+
+    // Save the PDF to a file
+    fs.writeFileSync('invoice.pdf', pdfBuffer);
 
     res.send('PDF created successfully.');
-  });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('An error occurred while generating the PDF.');
+  }
 });
 
 app.get('/fetch-pdf', (req, res) => {
