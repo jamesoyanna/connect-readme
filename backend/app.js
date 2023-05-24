@@ -27,7 +27,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/invoices', invoiceRoutes);
 
 app.get('/', (req, res) => {
-  res.send("Welcome to connect me Novu API")
+  res.send("Welcome to connect me Novu API.")
 })
 
 let options = { format: 'A4' };
