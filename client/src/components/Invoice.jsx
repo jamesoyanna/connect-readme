@@ -48,7 +48,7 @@ const Invoice = () => {
         console.error("Missing fields:", errorMessages);
         return;
       }
-
+      
       // Make the POST request to create an invoice
       const response = await api.post("/api/invoices", invoiceData);
 

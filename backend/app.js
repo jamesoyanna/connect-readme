@@ -31,31 +31,47 @@ app.get('/', (req, res) => {
 })
 
 let options = { format: 'A4' };
+
 app.post('/send-pdf', (req, res) => {
-    const { email } = req.body
-    pdf.create(pdfTemplate(req.body), options).toFile('invoice.pdf', (err) => {
-        
-const novu = new Novu(process.env.NOVU_API_KEY);
+  const { email } = req.body;
+  pdf.create(pdfTemplate(req.body), options).toFile('invoice.pdf', (err) => {
+    if (err) {
+      // Handle any error that occurred during PDF generation
+      console.error(err);
+      return res.status(500).json({ error: 'An error occurred while generating the PDF.' });
+    }
 
-novu.trigger('invoice-notification', {
-    to: {
-      subscriberId: '63695b559e04bb11b56924df',
-      email: `${email}`
-    },
-    payload: {
-      attachments: [
-        {
-          file: fs.readFileSync(__dirname + '/invoice.pdf').toString('base64'),
-          name: 'invoice.pdf',
-          mime: 'application/octet-stream',
-        },
-      ],
-    },
+    const novu = new Novu(process.env.NOVU_API_KEY);
+
+    novu.trigger('invoice-notification', {
+      to: {
+        subscriberId: '63695b559e04bb11b56924df',
+        email: `${email}`
+      },
+      payload: {
+        attachments: [
+          {
+            file: fs.readFileSync(__dirname + '/invoice.pdf').toString('base64'),
+            name: 'invoice.pdf',
+            mime: 'application/octet-stream',
+          },
+        ],
+      },
+    });
+
+    // Create the response data to be returned
+    const responseData = {
+      message: 'Invoice sent successfully.',
+      email: email,
+      invoiceData: req.body
+    };
+
+    // Send the response with the data
+    res.json(responseData);
   });
+});
 
-})
 
-})
 
 //CREATE AND SEND PDF INVOICE
 app.post('/create-pdf', (req, res) => {

@@ -24,25 +24,31 @@ const InvoiceDetails = () => {
       setError("");
   
       // Extract the email address from the invoiceData object
-      const { email } = invoiceData;
+      const { email, name, phoneNumber, notes, items, dueDate, issuedDate, totalQuantity, totalAmount, invoiceNumber } = invoiceData;
   
       // Make a POST request to the send-pdf endpoint
       const response = await api.post("/send-pdf", {
         email,
-        invoiceData,
+        name,
+        phoneNumber,
+        notes,
+        items,
+        dueDate,
+        issuedDate,
+        totalQuantity,
+        totalAmount,
+        invoiceNumber
       });
       setLoading(false);
       // Handle the response
-      console.log(response.data);
+      console.log("response from api", response.data);
     } catch (error) {
       setLoading(false);
       setError("An error occurred while sending the invoice.");
       console.error(error);
     }
   };
-  
 
-      
   // Format the date to a readable format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
