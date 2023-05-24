@@ -112,8 +112,10 @@ const Invoice = () => {
       <div className="w-full max-w-3xl p-4 bg-white shadow-md rounded-lg mt-8">
         <div className="mb-8">
           <div className="flex items-start justify-between mb-4">
-            <div >
+            <div>
+              <Link to="/">
               <img src={logo} alt="Logo" className="h-12 mb-2" />
+              </Link>
               <h1 className="text-2xl font-medium">Novu Hackathon Invoice</h1>
               <p>Lagos, Nigeria</p>
             </div>
