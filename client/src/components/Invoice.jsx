@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logo from "../images/one.png";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate, Link  } from "react-router-dom";
 import api from '../api';
 
 const Invoice = () => {
@@ -108,11 +108,11 @@ const Invoice = () => {
 
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center h-screen mt-8">
       <div className="w-full max-w-3xl p-4 bg-white shadow-md rounded-lg mt-8">
         <div className="mb-8">
           <div className="flex items-start justify-between mb-4">
-            <div>
+            <div >
               <img src={logo} alt="Logo" className="h-12 mb-2" />
               <h1 className="text-2xl font-medium">Novu Hackathon Invoice</h1>
               <p>Lagos, Nigeria</p>
