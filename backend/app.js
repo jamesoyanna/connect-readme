@@ -40,7 +40,6 @@ app.post('/send-pdf', (req, res) => {
       console.error(err);
       return res.status(500).json({ error: 'An error occurred while generating the PDF.' });
     }
-
     const novu = new Novu(process.env.NOVU_API_KEY);
 
     novu.trigger('invoice-notification', {
@@ -59,17 +58,11 @@ app.post('/send-pdf', (req, res) => {
       },
     });
 
-    // Create the response data to be returned
-    const responseData = {
-      message: 'Invoice sent successfully.',
-      email: email,
-      invoiceData: req.body
-    };
-
-    // Send the response with the data
-    res.json(responseData);
+    // Send the success response
+    res.json({ message: 'Invoice sent successfully.' });
   });
 });
+
 
 
 

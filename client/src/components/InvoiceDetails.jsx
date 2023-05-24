@@ -9,7 +9,9 @@ const InvoiceDetails = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
+  const {email} = invoiceData
   const navigateTo = (route) => {
     navigate(route);
   };
@@ -40,11 +42,19 @@ const InvoiceDetails = () => {
         invoiceNumber
       });
       setLoading(false);
+  
       // Handle the response
-      console.log("response from api", response.data);
+      if (response.data.error) {
+        setError(response.data.error);
+        setSuccess(false);
+      } else {
+        setSuccess(response.data.message);
+        setError("");
+      }
     } catch (error) {
       setLoading(false);
       setError("An error occurred while sending the invoice.");
+      setSuccess(false);
       console.error(error);
     }
   };
@@ -125,7 +135,7 @@ const InvoiceDetails = () => {
             <tr>
               <th className="border border-gray-400 px-4 py-2">Item Description</th>
               <th className="border border-gray-400 px-4 py-2">Quantity</th>
-              <th className="border border-gray-400 px-4 py-2">Price</th>
+              <th className="border border-gray-400 px-4 py-2">Price ($)</th>
               <th className="border border-gray-400 px-4 py-2">Amount</th>
             </tr>
           </thead>
@@ -153,15 +163,17 @@ const InvoiceDetails = () => {
           <div>
             <h3 className="text-lg font-medium">Invoice Summary:</h3>
             <p>Total Quantity: {invoiceData.totalQuantity}</p>
-            <p>Total Amount: {invoiceData.totalAmount}</p>
+            <p>Total Amount: $ {invoiceData.totalAmount}</p>
           </div>
         </div>
+        {success && !error && <p className="text-green-700 mb-8 text-center">Invoice sent successfully to your Email. Please check {email}</p>}
+      {error && !success && <p className="text-red-500 mb-8 text-center">{error}</p>}
         <div className="flex justify-center">
-        {error && <p>{error}</p>}
-          <button className="px-8 py-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none" onClick={handleSendInvoice} disabled={loading}>
-            {loading ? "Sending..." : "Send Invoice"}
-          </button>
-        </div>
+    
+        <button className="px-8 py-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none" onClick={handleSendInvoice} disabled={loading}>
+         {loading ? "Sending..." : "Send Invoice"}
+       </button>
+</div>
       </div>
     </div>
   );
