@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../images/one.png";
+import logo from "../images/logo-dark.png";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import api from "../api";
 
@@ -110,13 +110,13 @@ const InvoiceDetails = () => {
             <div>
               <button
                 onClick={handleGoBack}
-                className="py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
+                className="py-2 px-4 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
               >
                 Go Back
               </button>
               <button
                   onClick={handleEditInvoice}
-                  className="py-2 px-4 ml-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
+                  className="py-2 px-4 ml-2 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
                 >
                   Edit Invoice
                 </button>
@@ -329,7 +329,7 @@ const InvoiceDetails = () => {
           {editMode ? (
   <button
     onClick={handleEditInvoice}
-    className="py-2 px-4 ml-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
+    className="py-2 px-4 ml-2 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
   >
     Done
   </button>
@@ -337,7 +337,7 @@ const InvoiceDetails = () => {
   <button
     onClick={handleSendInvoice}
     disabled={loading}
-    className={`py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none ${
+    className={`py-2 px-4 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none ${
       loading ? "opacity-50 cursor-not-allowed" : ""
     }`}
   >

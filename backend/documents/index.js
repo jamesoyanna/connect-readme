@@ -101,7 +101,7 @@ const pdfTemplate = ({
         <b>${new Date().toLocaleTimeString()}</b>
       </p>
       <div>
-        <img style="height: 50px; width: 100px" src="https://res.cloudinary.com/startupbuz/image/upload/v1684856317/one_efpljs.png" />
+        <img style="height: 50px; width: 100px" src="https://res.cloudinary.com/startupbuz/image/upload/v1684966014/logo-dark_sxoghr.png" />
         <p style="font-size: 11px">Lagos, Nigeria<p/>
         </p>
       </div>

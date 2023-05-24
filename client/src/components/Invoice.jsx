@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../images/one.png";
+import logo from "../images/logo-dark.png";
 import { useNavigate, Link  } from "react-router-dom";
 import api from '../api';
 
@@ -268,7 +268,7 @@ const Invoice = () => {
               <div className="mb-4">
               <button
                        onClick={handleAddItem}
-                       className="py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
+                       className="py-2 px-4 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
                      >
               Add Item
               </button>
@@ -298,7 +298,7 @@ const Invoice = () => {
 <button
       onClick={handleCreateInvoice}
       type="submit"
-      className="px-8 py-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
+      className="px-8 py-2 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
       disabled={isLoading} // Disable the button while loading
     >
       {isLoading ? "Creating..." : "Create Invoice"}
