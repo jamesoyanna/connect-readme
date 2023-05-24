@@ -1,6 +1,5 @@
+const mongoose = require('mongoose');
 const InvoiceModel = require('../models/InvoiceModel');
-const { v4: uuidv4 } = require('uuid');
-
 
 function generateRandomNumber() {
   const min = 100000;
@@ -60,4 +59,25 @@ const getInvoice = async (req, res) => {
   }
 };
 
-module.exports = { getInvoice, createInvoice, getInvoices, getTotalCount };
+// Edit invoice
+const editInvoice = async (req, res) => {
+  const { id: _id } = req.params;
+  const invoice = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(_id)) {
+    return res.status(404).send('No invoice with that id');
+  }
+
+  const updatedInvoice = await InvoiceModel.findByIdAndUpdate(
+    _id,
+    { ...invoice, _id },
+    { new: true }
+  );
+
+  res.json(updatedInvoice);
+};
+
+
+
+
+module.exports = { getInvoice, createInvoice, getInvoices, getTotalCount, editInvoice };

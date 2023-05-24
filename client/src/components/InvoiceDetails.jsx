@@ -1,17 +1,19 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import logo from "../images/one.png";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import api from '../api';
+import api from "../api";
 
 const InvoiceDetails = () => {
   const location = useLocation();
-  const invoiceData = location.state?.invoiceData;
+  const initialInvoiceData = location.state?.invoiceData;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [editMode, setEditMode] = useState(false); // New state variable for edit mode
+  const [invoiceData, setInvoiceData] = useState(initialInvoiceData);
 
-  const {email} = invoiceData
+  const { email } = invoiceData;
   const navigateTo = (route) => {
     navigate(route);
   };
@@ -24,26 +26,10 @@ const InvoiceDetails = () => {
     try {
       setLoading(true);
       setError("");
-  
-      // Extract the email address from the invoiceData object
-      const { email, name, phoneNumber, notes, items, dueDate, issuedDate, totalQuantity, totalAmount, invoiceNumber } = invoiceData;
-  
-      // Make a POST request to the send-pdf endpoint
-      const response = await api.post("/send-pdf", {
-        email,
-        name,
-        phoneNumber,
-        notes,
-        items,
-        dueDate,
-        issuedDate,
-        totalQuantity,
-        totalAmount,
-        invoiceNumber
-      });
+
+      const response = await api.post("/send-pdf", invoiceData);
       setLoading(false);
-  
-      // Handle the response
+
       if (response.data.error) {
         setError(response.data.error);
         setSuccess(false);
@@ -59,12 +45,57 @@ const InvoiceDetails = () => {
     }
   };
 
+
+  const handleEditInvoice = async () => {
+    setEditMode(!editMode);
+  
+    if (editMode) {
+      try {
+        setLoading(true);
+        setError("");
+  
+        // Calculate the updated total quantity and total amount
+        let totalQuantity = 0;
+        let totalAmount = 0;
+  
+        invoiceData.items.forEach((item) => {
+          totalQuantity += parseInt(item.quantity);
+          totalAmount += item.quantity * item.unitPrice;
+        });
+  
+        const updatedInvoiceData = {
+          ...invoiceData,
+          totalQuantity,
+          totalAmount,
+        };
+  
+        const response = await api.patch(`/api/invoices/${invoiceData._id}`, updatedInvoiceData);
+        setLoading(false);
+  
+        if (response.data.error) {
+          setError(response.data.error);
+          setSuccess(false);
+        } else {
+          setSuccess(response.data.message);
+          setError("");
+  
+          // Update the state with the updated total quantity and total amount
+          setInvoiceData(updatedInvoiceData);
+        }
+      } catch (error) {
+        setLoading(false);
+        setError("An error occurred while editing the invoice.");
+        setSuccess(false);
+        console.error(error);
+      }
+    }
+  };
+  
   // Format the date to a readable format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toDateString();
   };
-
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -73,19 +104,35 @@ const InvoiceDetails = () => {
           <div className="flex items-start justify-between mb-4">
             <div>
               <Link to="/">
-              <img src={logo} alt="Logo" className="h-12 mb-2" />
+                <img src={logo} alt="Logo" className="h-12 mb-2" />
               </Link>
               <h1 className="text-2xl font-medium">Novu hackathon Invoice</h1>
               <p>Lagos, Nigeria</p>
             </div>
-            <button
-              onClick={handleGoBack}
-              className="py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
-            >
-              Go Back
-            </button>
+            <div>
+              <button
+                onClick={handleGoBack}
+                className="py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
+              >
+                Go Back
+              </button>
+              {editMode ? (
+                <button
+                  onClick={handleEditInvoice}
+                  className="py-2 px-4 ml-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
+                >
+                  Done
+                </button>
+              ) : (
+                <button
+                  onClick={handleEditInvoice}
+                  className="py-2 px-4 ml-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none"
+                >
+                  Edit Invoice
+                </button>
+              )}
+            </div>
             <div className="flex items-start">
-                
               <div className="ml-auto">
                 <p className="font-medium">Invoice No:</p>
                 <p>{invoiceData.invoiceNumber}</p>
@@ -100,7 +147,20 @@ const InvoiceDetails = () => {
               <label htmlFor="billTo" className="block mb-1 font-medium">
                 Bill To:
               </label>
-              <p>{invoiceData.name}</p>
+              {editMode ? (
+                <input
+                  type="text"
+                  value={invoiceData.name}
+                  onChange={(e) =>
+                    setInvoiceData((prevState) => ({
+                      ...prevState,
+                      name: e.target.value,
+                    }))
+                  }
+                />
+              ) : (
+                <p>{invoiceData.name}</p>
+              )}
             </div>
             <div>
               <div className="ml-8">
@@ -116,7 +176,20 @@ const InvoiceDetails = () => {
               <label htmlFor="email" className="block mb-1 font-medium">
                 Email Address:
               </label>
-              <p>{invoiceData.email}</p>
+              {editMode ? (
+                <input
+                  type="email"
+                  value={invoiceData.email}
+                  onChange={(e) =>
+                    setInvoiceData((prevState) => ({
+                      ...prevState,
+                      email: e.target.value,
+                    }))
+                  }
+                />
+              ) : (
+                <p>{invoiceData.email}</p>
+              )}
             </div>
             <div className="ml-8">
               <p className="font-medium">Due Date:</p>
@@ -126,7 +199,20 @@ const InvoiceDetails = () => {
               <label htmlFor="email" className="block mb-1 font-medium">
                 Phone Number:
               </label>
-              <p>{invoiceData.phoneNumber}</p>
+              {editMode ? (
+                <input
+                  type="tel"
+                  value={invoiceData.phoneNumber}
+                  onChange={(e) =>
+                    setInvoiceData((prevState) => ({
+                      ...prevState,
+                      phoneNumber: e.target.value,
+                    }))
+                  }
+                />
+              ) : (
+                <p>{invoiceData.phoneNumber}</p>
+              )}
             </div>
           </div>
         </div>
@@ -142,23 +228,92 @@ const InvoiceDetails = () => {
           <tbody>
             {invoiceData.items.map((item, index) => (
               <tr key={index}>
-                <td className="border border-gray-400 px-4 py-2">{item.itemName}</td>
-                <td className="border border-gray-400 px-4 py-2">{item.quantity}</td>
-                <td className="border border-gray-400 px-4 py-2">{item.unitPrice}</td>
-                <td className="border border-gray-400 px-4 py-2">{item.quantity * item.unitPrice}</td>
-               
+                <td className="border border-gray-400 px-4 py-2">
+                  {editMode ? (
+                    <input
+                      type="text"
+                      value={item.itemName}
+                      onChange={(e) =>
+                        setInvoiceData((prevState) => ({
+                          ...prevState,
+                          items: prevState.items.map((prevItem, i) =>
+                            i === index
+                              ? { ...prevItem, itemName: e.target.value }
+                              : prevItem
+                          ),
+                        }))
+                      }
+                    />
+                  ) : (
+                    item.itemName
+                  )}
+                </td>
+                <td className="border border-gray-400 px-4 py-2">
+                  {editMode ? (
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        setInvoiceData((prevState) => ({
+                          ...prevState,
+                          items: prevState.items.map((prevItem, i) =>
+                            i === index
+                              ? { ...prevItem, quantity: e.target.value }
+                              : prevItem
+                          ),
+                        }))
+                      }
+                    />
+                  ) : (
+                    item.quantity
+                  )}
+                </td>
+                <td className="border border-gray-400 px-4 py-2">
+                  {editMode ? (
+                    <input
+                      type="number"
+                      value={item.unitPrice}
+                      onChange={(e) =>
+                        setInvoiceData((prevState) => ({
+                          ...prevState,
+                          items: prevState.items.map((prevItem, i) =>
+                            i === index
+                              ? { ...prevItem, unitPrice: e.target.value }
+                              : prevItem
+                          ),
+                        }))
+                      }
+                    />
+                  ) : (
+                    item.unitPrice
+                  )}
+                </td>
+                <td className="border border-gray-400 px-4 py-2">
+                  {item.quantity * item.unitPrice}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-       
         <div className="border-t border-b my-4"></div>
         <div className="flex items-start justify-between mb-4">
           <div>
             <label htmlFor="note" className="block mb-1 font-medium">
               Note/Payment Info:
             </label>
-            <p>{invoiceData.notes}</p>
+            {editMode ? (
+              <textarea
+                value={invoiceData.notes}
+                onChange={(e) =>
+                  setInvoiceData((prevState) => ({
+                    ...prevState,
+                    notes: e.target.value,
+                  }))
+                }
+              />
+            ) : (
+              <p>{invoiceData.notes}</p>
+            )}
           </div>
           <div>
             <h3 className="text-lg font-medium">Invoice Summary:</h3>
@@ -166,14 +321,25 @@ const InvoiceDetails = () => {
             <p>Total Amount: $ {invoiceData.totalAmount}</p>
           </div>
         </div>
-        {success && !error && <p className="text-green-700 mb-8 text-center">Invoice sent successfully to your Email. Please check {email}</p>}
-      {error && !success && <p className="text-red-500 mb-8 text-center">{error}</p>}
-        <div className="flex justify-center">
-    
-        <button className="px-8 py-2 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none" onClick={handleSendInvoice} disabled={loading}>
-         {loading ? "Sending..." : "Send Invoice"}
-       </button>
-</div>
+        {success && !error && (
+          <p className="text-green-700 mb-8 text-center">
+            Invoice sent successfully!. Please check your email at {email}
+          </p>
+        )}
+        {error && (
+          <p className="text-red-700 mb-8 text-center">{error}</p>
+        )}
+          <div className="flex items-center justify-center">
+            <button
+              onClick={handleSendInvoice}
+              disabled={loading}
+              className={`py-2 px-4 bg-blue-900 text-white rounded hover:bg-blue-600 focus:outline-none ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {loading ? "Sending..." : "Send Invoice"}
+            </button>
+          </div>
       </div>
     </div>
   );
