@@ -98,8 +98,24 @@ const InvoiceDetails = () => {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-full max-w-3xl p-4 bg-white shadow-md rounded-lg mt-8">
+      <div className="flex items-start justify-center mb-4">
+            <button
+                onClick={handleGoBack}
+                className="py-2 px-4 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+              >
+                Go Back
+              </button>
+              <button
+                onClick={handleEditInvoice}
+                className="py-2 px-4 ml-2 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+              >
+                Edit Invoice
+                </button>
+            </div>
         <div className="mb-8">
+        
           <div className="flex items-start justify-between mb-4">
+
             <div>
               <Link to="/">
                 <img src={logo} alt="Logo" className="h-12 mb-2" />
@@ -107,20 +123,7 @@ const InvoiceDetails = () => {
               <h1 className="text-2xl font-medium">Novu hackathon Invoice</h1>
               <p>Lagos, Nigeria</p>
             </div>
-            <div>
-              <button
-                onClick={handleGoBack}
-                className="py-2 px-4 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-              >
-                Go Back
-              </button>
-              <button
-                  onClick={handleEditInvoice}
-                  className="py-2 px-4 ml-2 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-                >
-                  Edit Invoice
-                </button>
-            </div>
+            
             <div className="flex items-start">
               <div className="ml-auto">
                 <p className="text-lg font-bold">Invoice No:</p>
