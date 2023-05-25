@@ -341,7 +341,7 @@ const InvoiceDetails = () => {
       loading ? "opacity-50 cursor-not-allowed" : ""
     }`}
   >
-    {loading ? "Sending..." : "Send Invoice"}
+    {loading ? "Sending Invoice..." : "Send Invoice"}
   </button>
 )}
           </div>

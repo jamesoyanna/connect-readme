@@ -246,7 +246,7 @@ const Invoice = () => {
       className="px-8 py-2 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
       disabled={isLoading} // Disable the button while loading
     >
-      {isLoading ? "Creating..." : "Create Invoice"}
+      {isLoading ? "Creating  Invoice..." : "Create Invoice"}
     </button>
 </div>
 </div>
