@@ -20,10 +20,7 @@ app.use(cors());
 connectToDatabase();
 
 // Routes
-const userRoutes = require('./routes/userRoutes.js');
 const invoiceRoutes = require('./routes/invoiceRoute.js')
-
-app.use('/api/user', userRoutes);
 app.use('/api/invoices', invoiceRoutes);
 
 app.get('/', (req, res) => {
@@ -64,22 +61,6 @@ app.post('/send-pdf', (req, res) => {
 });
 
 
-
-
-//CREATE AND SEND PDF INVOICE
-app.post('/create-pdf', (req, res) => {
-  pdf.create(pdfTemplate(req.body), {}).toFile('invoice.pdf', (err) => {
-      if(err) {
-          res.send(Promise.reject());
-      }
-      res.send(Promise.resolve());
-  });
-});
-
-//SEND PDF INVOICE
-app.get('/fetch-pdf', (req, res) => {
-   res.sendFile(`${__dirname}/invoice.pdf`)
-})
 
 
 const PORT = process.env.PORT || 4000;

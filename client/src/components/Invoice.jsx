@@ -70,30 +70,30 @@ const Invoice = () => {
   
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setInvoiceData({ ...invoiceData, [name]: value });
+    setInvoiceData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleItemChange = (index, event) => {
     const { name, value } = event.target;
     const newItems = [...invoiceData.items];
     newItems[index][name] = value;
-    setInvoiceData({ ...invoiceData, items: newItems });
+    setInvoiceData((prevData) => ({ ...prevData, items: newItems }));
     updateTotals(newItems);
   };
 
   const handleAddItem = () => {
-    setInvoiceData({
-      ...invoiceData,
-      items: [...invoiceData.items, { itemName: "", quantity: "", unitPrice: "" }],
-    });
+    setInvoiceData((prevData) => ({
+      ...prevData,
+      items: [...prevData.items, { itemName: "", quantity: "", unitPrice: "" }],
+    }));
   };  
 
   const handleRemoveItem = (index) => {
     const newItems = [...invoiceData.items];
     newItems.splice(index, 1);
   
-    setInvoiceData((prevState) => ({
-      ...prevState,
+    setInvoiceData((prevData) => ({
+      ...prevData,
       items: newItems,
     }));
   };
@@ -104,19 +104,19 @@ const Invoice = () => {
       (total, item) => total + (parseInt(item.quantity || 0) * parseFloat(item.unitPrice || 0)),
       0
     );
-    setInvoiceData({ ...invoiceData, totalQuantity, totalAmount });
+    setInvoiceData((prevData) => ({ ...prevData, totalQuantity, totalAmount }));
   };
 
 
   return (
     <div className="flex justify-center items-center h-screen mt-8">
       <div className="w-full max-w-3xl p-4 bg-white shadow-md rounded-lg mt-8">
-      <InvoiceHeader invoiceNumber={invoiceData.invoiceNumber} />
-      <div className="border-t border-gray-400 mb-4"></div>
+        <InvoiceHeader invoiceNumber={invoiceData.invoiceNumber} />
+        <div className="border-t border-gray-400 mb-4"></div>
         <div className="mb-4">
-        <div className="grid grid-cols-2 gap-4">
-        <div>
-        <FormField
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <FormField
                 label="Bill To"
                 name="name"
                 type="text"
@@ -125,8 +125,8 @@ const Invoice = () => {
                 placeholder="Enter bill to"
                 error={errors.name}
               />
-        </div>
-        <div className="ml-8">
+            </div>
+            <div className="ml-8">
               <p className="font-medium">Issued Date:</p>
               <input
                 type="date"
@@ -135,14 +135,14 @@ const Invoice = () => {
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
               />
-        </div>
-        </div>
+            </div>
+          </div>
         </div>
 
         <div className="mb-8">
           <div className="border-t border-gray-400 mb-4"></div>
         </div>
-       
+
         <div className="mb-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -157,22 +157,21 @@ const Invoice = () => {
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                 placeholder="Enter email address"
-                
               />
-               {errors.email && <p className="text-red-500">{errors.email}</p>}
+              {errors.email && <p className="text-red-500">{errors.email}</p>}
             </div>
             <div className="ml-8">
-                <p className="font-medium">Due Date:</p>
-                <input
-                  type="date"
-                  name="dueDate"
-                  value={invoiceData.dueDate}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-              <label htmlFor="email" className="block mb-1 font-medium">
+              <p className="font-medium">Due Date:</p>
+              <input
+                type="date"
+                name="dueDate"
+                value={invoiceData.dueDate}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="phoneNumber" className="block mb-1 font-medium">
                 Phone Number:
               </label>
               <input
@@ -187,6 +186,7 @@ const Invoice = () => {
             </div>
           </div>
         </div>
+
         <table className="w-full border-collapse border border-gray-400 mb-4">
           <thead>
             <tr>
@@ -209,49 +209,54 @@ const Invoice = () => {
             ))}
           </tbody>
         </table>
-              {errors.items && <p className="text-red-500">{errors.items}</p>}
-              <div className="mb-4">
-              <button
-                       onClick={handleAddItem}
-                       className="py-2 px-4 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-                     >
-              Add Item
-              </button>
-              </div>
-              <div className="border-t border-b my-4"></div>
-              <div className="flex items-start justify-between mb-4">
-              <div>
-<label htmlFor="note" className="block mb-1 font-medium">Note/Payment Info:</label>
-<textarea
-           id="notes"
-           name="notes"
-           value={invoiceData.notes}
-           onChange={handleInputChange}
-           className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
-           placeholder="Enter note/payment info"
-         />
-</div>
-              <div>
-              <h3 className="text-lg font-medium">
-              Invoice Summary:</h3>
-<p>Total Quantity: {invoiceData.totalQuantity}</p>
-<p>Total Amount: $ {invoiceData.totalAmount}</p>
-</div>
 
-</div>
-<div className="flex justify-center">
-<button
-      onClick={handleCreateInvoice}
-      type="submit"
-      className="px-8 py-2 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-      disabled={isLoading} // Disable the button while loading
-    >
-      {isLoading ? "Creating  Invoice..." : "Create Invoice"}
-    </button>
-</div>
-</div>
-</div>
-);
+        {errors.items && <p className="text-red-500">{errors.items}</p>}
+
+        <div className="mb-4">
+          <button
+            onClick={handleAddItem}
+            className="py-2 px-4 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+          >
+            Add Item
+          </button>
+        </div>
+
+        <div className="border-t border-b my-4"></div>
+
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <label htmlFor="notes" className="block mb-1 font-medium">
+              Note/Payment Info:
+            </label>
+            <textarea
+              id="notes"
+              name="notes"
+              value={invoiceData.notes}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+              placeholder="Enter note/payment info"
+            />
+          </div>
+          <div>
+            <h3 className="text-lg font-medium">Invoice Summary:</h3>
+            <p>Total Quantity: {invoiceData.totalQuantity}</p>
+            <p>Total Amount: $ {invoiceData.totalAmount}</p>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <button
+            onClick={handleCreateInvoice}
+            type="submit"
+            className="px-8 py-2 bg-gradient-to-r from-purple-700 to-red-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+            disabled={isLoading} // Disable the button while loading
+          >
+            {isLoading ? "Creating Invoice..." : "Create Invoice"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Invoice;
