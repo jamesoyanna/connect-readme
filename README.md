@@ -150,7 +150,14 @@ Run npm install from your terminal.
 Then run npm start. 
 Your server should start running on  port 5000.
 
-## Author
+## About Me 
+James is a Software Engineer with a demonstrated history of developing and managing client-centric applications that successfully meet customer objectives.
+
+With over 7 years of experience, he has a strong track record in developing high-quality software that aligns with design requirements.
+
+Currently, James is the Founder and Developer Advocate at [DevsCourt](https://devscourt.com), a rapidly expanding developer community. 
+
+The primary mission of DevsCourt is to revolutionize software engineering education and foster a network of exceptional software engineers.
 
 #### James Oyanna
 * [GitHub](https://github.com/jamesoyanna)
