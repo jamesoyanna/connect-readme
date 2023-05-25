@@ -85,15 +85,20 @@ const Invoice = () => {
       ...invoiceData,
       items: [...invoiceData.items, { itemName: "", quantity: "", unitPrice: "" }],
     });
-  };
+  };  
 
- 
   const handleRemoveItem = (index) => {
     const newItems = [...invoiceData.items];
     newItems.splice(index, 1);
-    setInvoiceData({ ...invoiceData, items: newItems });
-    updateTotals(newItems);
+  
+    setInvoiceData((prevState) => ({
+      ...prevState,
+      items: newItems,
+    }));
   };
+  
+  
+  
 
 
   const updateTotals = (items) => {
@@ -254,7 +259,7 @@ const Invoice = () => {
               <td className="border border-gray-400 px-4 py-2">
                 
               <button
-              onClick={() => handleRemoveItem(index)}
+              onClick={() =>handleRemoveItem(index)}
               className="text-red-500 hover:text-red-700 focus:outline-none"
               >
               Remove
@@ -290,7 +295,7 @@ const Invoice = () => {
               <h3 className="text-lg font-medium">
               Invoice Summary:</h3>
 <p>Total Quantity: {invoiceData.totalQuantity}</p>
-<p>Total Amount: {invoiceData.totalAmount}</p>
+<p>Total Amount: $ {invoiceData.totalAmount}</p>
 </div>
 
 </div>

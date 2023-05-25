@@ -318,7 +318,7 @@ const InvoiceDetails = () => {
           </div>
         </div>
         {success && !error && (
-          <p className="text-green-700 mb-8 text-center">
+          <p className="text-green-700 mb-8 text-center text-lg">
             Invoice sent successfully!. Please check your email at {email}
           </p>
         )}
