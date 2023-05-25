@@ -1,20 +1,34 @@
 ## Novu hackathon Invoice App
 
+## Description: 
+
 ### About Project
-This project is an easy-to-use fullstack Online Invoicing application for creating and Sending invoices to customers via email, suiteable for Startups, Business Owners and Freelancers. 
+ Online Invoicing application for creating and Sending invoices to customers via email, suitable for Startups, Business Owners and Freelancers. 
+
+
+This project is a is a user-friendly full-stack Online Invoicing application designed to streamline the process of creating and sending invoices to customers via email. 
+
+This application caters to the needs of startups, business owners, and freelancers who require a simple yet efficient invoicing system. 
+
+The project is built using React and Node.js, making use of the Novu API for seamless delivery of invoices as email messages.
 
 ## Application Features
-- Create a new invoice
-- Compose and quote invoice.
-- Send invoice to customer via Email
+- ### Invoice Creation: 
+The application provides a user-friendly interface for creating professional invoices. 
 
-## Application Functionalities 
-You create an invoice to send to the customer. Add the billing information, item description, quantity and price. 
+Users can input relevant details such as the customer's name, billing information, item descriptions, quantities, prices, and notes. 
 
-You can also add more items, edit or delete item from your invoice.
-Upon creation of an invoiece, you can send it to a customer by clicking on the Send Invoice button and it would be sent to customer via the email adddress you added when you were creating the invoice.
+- ### Invoice Sending: 
+The invoicing application integrates the Novu API, enabling users to send invoices in PDF format directly to customers via email. 
 
-The invoice is sent as a PDF.
+With a unified delivery API, the application ensures reliable and efficient delivery of invoices to the intended recipients.
+
+- ### Edit Invoice Functionality: 
+To cater to changing requirements or corrections, the application incorporates an edit invoice functionality. 
+
+Users can seamlessly update invoice details, such as customer information, item descriptions, quantities, and prices. 
+
+The application automatically recalculates the total quantity and amount based on the edited values.
 
 
 #### Live view of the application Demo can be VIEWD here- [Novu Hackathon Invoice App](https://connect-novu.netlify.app/)
