@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import logo from "../images/logo-dark.png";
-import { useNavigate, Link  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from '../api';
+
+import InvoiceHeader from "./InvoiceHeader";
+import FormField from "./FormField";
+import InvoiceItem from "./InvoiceItem";
 
 const Invoice = () => {
   const navigate = useNavigate();
@@ -65,8 +68,6 @@ const Invoice = () => {
     }
   };
   
-  
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setInvoiceData({ ...invoiceData, [name]: value });
@@ -96,10 +97,6 @@ const Invoice = () => {
       items: newItems,
     }));
   };
-  
-  
-  
-
 
   const updateTotals = (items) => {
     const totalQuantity = items.reduce((total, item) => total + parseInt(item.quantity || 0), 0);
@@ -114,56 +111,38 @@ const Invoice = () => {
   return (
     <div className="flex justify-center items-center h-screen mt-8">
       <div className="w-full max-w-3xl p-4 bg-white shadow-md rounded-lg mt-8">
-        <div className="mb-8">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <Link to="/">
-              <img src={logo} alt="Logo" className="h-12 mb-2" />
-              </Link>
-              <h1 className="text-2xl font-medium">Novu Hackathon Invoice</h1>
-              <p>Lagos, Nigeria</p>
-            </div>
-            <div className="flex items-start">
-              <div className="ml-auto">
-                <p className="font-medium">Invoice No:</p>
-                {invoiceData.invoiceNumber}
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-400 mb-4"></div>
-        </div>
+      <InvoiceHeader invoiceNumber={invoiceData.invoiceNumber} />
+      <div className="border-t border-gray-400 mb-4"></div>
         <div className="mb-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="billTo" className="block mb-1 font-medium">
-                Bill To:
-              </label>
-              <input
-                id="name"
+        <div className="grid grid-cols-2 gap-4">
+        <div>
+        <FormField
+                label="Bill To"
                 name="name"
                 type="text"
                 value={invoiceData.name}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                 placeholder="Enter bill to"
+                error={errors.name}
               />
-               {errors.name && <p className="text-red-500">{errors.name}</p>}
-            </div>
-            <div>
-              <div className="ml-8">
-                <p className="font-medium">Issued Date:</p>
-                <input
-                  type="date"
-                  name="issuedDate"
-                  value={invoiceData.issuedDate}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
-                />
-              </div>
-              
-            </div>
-          </div>
         </div>
+        <div className="ml-8">
+              <p className="font-medium">Issued Date:</p>
+              <input
+                type="date"
+                name="issuedDate"
+                value={invoiceData.issuedDate}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+              />
+        </div>
+        </div>
+        </div>
+
+        <div className="mb-8">
+          <div className="border-t border-gray-400 mb-4"></div>
+        </div>
+       
         <div className="mb-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -208,67 +187,28 @@ const Invoice = () => {
             </div>
           </div>
         </div>
-              <table className="w-full border-collapse border border-gray-400 mb-4">
-              <thead>
-              <tr>
+        <table className="w-full border-collapse border border-gray-400 mb-4">
+          <thead>
+            <tr>
               <th className="border border-gray-400 px-4 py-2">Item Description</th>
               <th className="border border-gray-400 px-4 py-2">Quantity</th>
               <th className="border border-gray-400 px-4 py-2">Price</th>
               <th className="border border-gray-400 px-4 py-2">Amount</th>
               <th className="border border-gray-400 px-4 py-2">Actions</th>
-              </tr>
-              </thead>
-              <tbody>
-              {invoiceData.items.map((item, index) => (
-              <tr key={index}>
-              <td className="border border-gray-400 px-4 py-2">
-              <input
-              name="itemName"
-              type="text"
-              value={item.itemName}
-              onChange={(e) => handleItemChange(index, e)}
-              className="w-full px-2 py-1 border rounded focus:outline-none focus:border-blue-500"
-              placeholder="Enter item description"
+            </tr>
+          </thead>
+          <tbody>
+            {invoiceData.items.map((item, index) => (
+              <InvoiceItem
+                key={index}
+                item={item}
+                index={index}
+                onChange={handleItemChange}
+                onRemove={handleRemoveItem}
               />
-              
-              </td>
-              
-              <td className="border border-gray-400 px-4 py-2">
-              <input
-              name="quantity"
-              type="number"
-              value={item.quantity}
-              onChange={(e) => handleItemChange(index, e)}
-              className="w-full px-2 py-1 border rounded focus:outline-none focus:border-blue-500"
-              placeholder="Enter quantity"
-              />
-              </td>
-              <td className="border border-gray-400 px-4 py-2">
-              <input
-              name="unitPrice"
-              type="number"
-              value={item.unitPrice}
-              onChange={(e) => handleItemChange(index, e)}
-              className="w-full px-2 py-1 border rounded focus:outline-none focus:border-blue-500"
-              placeholder="Enter price"
-              />
-              
-              </td>
-              
-              <td className="border border-gray-400 px-4 py-2">{item.quantity * item.unitPrice}</td>
-              <td className="border border-gray-400 px-4 py-2">
-                
-              <button
-              onClick={() =>handleRemoveItem(index)}
-              className="text-red-500 hover:text-red-700 focus:outline-none"
-              >
-              Remove
-              </button>
-              </td>
-              </tr>
-              ))}
-              </tbody>
-              </table>
+            ))}
+          </tbody>
+        </table>
               {errors.items && <p className="text-red-500">{errors.items}</p>}
               <div className="mb-4">
               <button
