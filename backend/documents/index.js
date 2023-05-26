@@ -10,6 +10,19 @@ const pdfTemplate = ({
     totalAmount,
     invoiceNumber
   }) => {
+    const formattedItems = items
+      ?.map(
+        (item) => `
+          <tr>
+            <td style="font-size: 9px">${item.itemName}</td>
+            <td style="font-size: 9px">${item.quantity}</td>
+            <td style="font-size: 9px">${item.unitPrice}</td>
+            <td style="font-size: 9px">${item.quantity * item.unitPrice}</td>
+          </tr>
+        `
+      )
+      .join('');
+  
     return `
       <!DOCTYPE html>
       <html>
@@ -17,22 +30,22 @@ const pdfTemplate = ({
       <style>
       
       .invoice-container {
-         padding: 0;
-         padding-top: 10px;
-         font-family: 'Roboto', sans-serif;
-         width: 530px;
-         margin: 0px auto;
+        padding: 0;
+        padding-top: 10px;
+        font-family: 'Roboto', sans-serif;
+        width: 530px;
+        margin: 0px auto;
       }
       
       table {
-       font-family: Arial, Helvetica, sans-serif;
-       border-collapse: collapse;
-       width: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
       }
       
       table td, table th {
-       border: 1px solid rgb(247, 247, 247);
-       padding: 10px;
+        border: 1px solid rgb(247, 247, 247);
+        padding: 10px;
       }
       
       table tr:nth-child(even){background-color: #f8f8f8;}
@@ -40,55 +53,55 @@ const pdfTemplate = ({
       table tr:hover {background-color: rgb(243, 243, 243);}
       
       table th {
-       padding-top: 12px;
-       padding-bottom: 12px;
-       text-align: left;
-       background-color: #FFFFFF;
-       color: rgb(78, 78, 78);
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #FFFFFF;
+        color: rgb(78, 78, 78);
       }
       
       .header {
-         display: flex;
-         align-items: center;
-         justify-content: space-between;
-         padding: 10px 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 5px;
       }
       
       .address {
-         display: flex;
-         align-items: center;
-         flex-direction: column;
-         justify-content: space-between;
-         padding: 10px 0px 15px 0px;
-         font-size: 12px;
-         margin-top: -20px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 10px 0px 15px 0px;
+        font-size: 12px;
+        margin-top: -20px;
       }
       
       .status {
-         text-align: right;
+        text-align: right;
       }
       
       .receipt-id {
-         text-align: right;
+        text-align: right;
       }
       
       .title {
-         font-weight: 100;
-         text-transform: uppercase;
-         color: gray;
-         letter-spacing: 2px;
-         font-size: 8px;
+        font-weight: 100;
+        text-transform: uppercase;
+        color: gray;
+        letter-spacing: 2px;
+        font-size: 8px;
       }
       
       .summary {
-         margin-top: 2px;
-         margin-right: 0px;
-         margin-left: 50%;
-         margin-bottom: 15px;
+        margin-top: 2px;
+        margin-right: 0px;
+        margin-left: 50%;
+        margin-bottom: 15px;
       }
       
       img {
-         width: 100px;
+        width: 100px;
       }
       
       </style>
@@ -140,18 +153,7 @@ const pdfTemplate = ({
          <th style="font-size: 9px">Price ($)</th>
          <th style="font-size: 9px">Amount</th>
        </tr>
-       ${items
-         ?.map(
-           (item) => `
-             <tr>
-               <td style="font-size: 9px">${item.itemName}</td>
-               <td style="font-size: 9px">${item.quantity}</td>
-               <td style="font-size: 9px">${item.unitPrice}</td>
-               <td style="font-size: 9px">${item.quantity * item.unitPrice}</td>
-             </tr>
-           `
-         )
-         .join('')}
+       ${formattedItems}
       </table>
       
       <section class="summary">
@@ -161,9 +163,9 @@ const pdfTemplate = ({
             <th></th>
           </tr>
           <tr>
-          <td style="font-size: 10px">Total Quantity</td>
-          <td style="text-align: right; font-size: 9px; font-weight: 700">${totalQuantity}</td>
-        </tr>
+            <td style="font-size: 10px">Total Quantity</td>
+            <td style="text-align: right; font-size: 9px; font-weight: 700">${totalQuantity}</td>
+          </tr>
           <tr>
             <td style="font-size: 10px">Total Amount</td>
             <td style="text-align: right; font-size: 9px; font-weight: 700">$ ${totalAmount}</td>
